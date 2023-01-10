@@ -13,7 +13,6 @@ import {
 } from './js/notiflix';
 
 const formRef = document.querySelector('.search-form');
-const guardRef = document.querySelector('.js-guard');
 
 const imagesApiService = new ImagesApiService();
 const loadMoreBtn = new LoadMoreBtn('.load-more');
@@ -53,14 +52,12 @@ async function handleSearch(event) {
 
     if (totalHits < 40) {
       loadMoreBtn.hide();
-    }
-    if (imagesApiService.data >= totalHits) {
-      observer.unobserve(guardRef);
+    } else if (imagesApiService.data >= totalHits) {
       notiflixEndOfResultsMessage();
     }
   } catch (error) {
     notiflixErrorMessage();
-    // imagesApiService.stopLoading();
+    imagesApiService.stopLoading();
   }
 }
 
@@ -77,7 +74,7 @@ async function handleClickOnLoadMoreBtn() {
 
     if (imagesApiService.data >= totalHits) {
       loadMoreBtn.hide();
-      notifilixEndOfResultsMessage();
+      notiflixEndOfResultsMessage();
     }
   } catch (error) {
     notiflixErrorMessage();
