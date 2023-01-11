@@ -39,13 +39,17 @@ async function handleSearch(event) {
 
     const { totalHits, hits } = await imagesApiService.fetchImages();
 
+    if (imagesApiService.query === imagesApiService.searchQuery) {
+      imagesApiService.data = 0;
+      lightbox.refresh();
+    }
+
     if (hits.length !== 0) {
       notiflixResultsAmountMessage(totalHits);
       createGalleryMarkup(hits);
       loadMoreBtn.show();
       imagesApiService.data += hits.length;
       lightbox.refresh();
-      scrollSmoothly();
     } else {
       notiflixNoMatchesMessage();
     }
@@ -54,10 +58,15 @@ async function handleSearch(event) {
       loadMoreBtn.hide();
     } else if (imagesApiService.data >= totalHits) {
       notiflixEndOfResultsMessage();
+      console.log(imagesApiService.data);
+      imagesApiService.data = 0;
+      imagesApiService.searchQuery = '';
+      resetGallery();
     }
   } catch (error) {
     notiflixErrorMessage();
     imagesApiService.stopLoading();
+    console.log(error);
   }
 }
 
@@ -75,6 +84,8 @@ async function handleClickOnLoadMoreBtn() {
     if (imagesApiService.data >= totalHits) {
       loadMoreBtn.hide();
       notiflixEndOfResultsMessage();
+      imagesApiService.data = 0;
+      imagesApiService.searchQuery = '';
     }
   } catch (error) {
     notiflixErrorMessage();
